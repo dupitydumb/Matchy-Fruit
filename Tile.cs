@@ -11,6 +11,11 @@ public enum TileType
     Normal_2,
     Normal_3,
     Normal_4,
+    
+    Special_1,
+    Special_2,
+    Special_3,
+
 }
 
 
@@ -21,10 +26,14 @@ public class Tile : MonoBehaviour
     public int floorIndex;
     bool isAvailable = true;
 
+    
+    public int posX;
+    public int posY;
+
     public GameObject shadow;
 
     public TileType tileType;
-
+    bool isItem = false;
     public bool picked = false;
     public List<GameObject> collideWith = new List<GameObject>();
 
@@ -32,13 +41,21 @@ public class Tile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         levelManager = LevelManager.instance;
         Debug.Log(isAvailable);
         transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = icons;
         transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = floorIndex + 1;
 
-        LevelManager.instance.OnTileClicked.AddListener(CheckCollide);
+        if (tileType == TileType.Special_1)
+        {
+            isItem = true;
+        }
     }
+
+
+    //check if the tile is on edge
+    
 
     // Update is called once per frame
     void Update()
@@ -59,6 +76,11 @@ public class Tile : MonoBehaviour
         }
 
         CheckCollide();
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            CheckBelow();
+        }
     }
 
     /// <summary>
@@ -68,12 +90,13 @@ public class Tile : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (isAvailable)
+            if (isAvailable && !picked && !isItem)
             {
                 Debug.Log("Clicked");
                 levelManager.itemContainer.Add(this);
                 floorIndex = 0;
                 picked = true;
+                levelManager.OnTileClicked.Invoke();
                 try {
                     levelManager.CheckItemsContainer();
                 }
@@ -83,6 +106,8 @@ public class Tile : MonoBehaviour
                 }
             }
         }
+
+        
     }
 
   
@@ -116,6 +141,31 @@ public class Tile : MonoBehaviour
                 collideWith.Remove(tile);
             }
         }
+    }
+
+
+    //Frog Items
+    //Spawn tile below if empty
+    List<Tile> tilesBelow = new List<Tile>();
+
+    void CheckBelow()
+    {
+        //Get all tiles below
+        tilesBelow = levelManager.tiles.Where(tile => tile.posX == posX && tile.posY == posY-1 && tile.floorIndex == floorIndex).ToList();
+        Debug.Log(tilesBelow.Count);
+        //If tiles below is empty
+        if (tilesBelow.Count <= 0)
+        {
+            //Spawn new tile
+            SpawnTileBelow();
+        }
+        //If tiles below is not empty
+    
+    }
+
+    void SpawnTileBelow()
+    {
+        Debug.Log("Spawn Tile Below");
     }
 
     

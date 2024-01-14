@@ -10,11 +10,15 @@ public class LevelManager : MonoBehaviour
 {
 
     public Tilemap[] tilemap;
+
+    public GameObject[] specialTile;
     public GameObject TilePrefab;
 
     public UnityEvent OnTileClicked;
     public GameObject container;
     public List<Tile> itemContainer = new List<Tile>();
+
+    public List<Tile> tiles = new List<Tile>();
     public static LevelManager instance;
 
     void Awake()
@@ -55,24 +59,57 @@ public class LevelManager : MonoBehaviour
                     Vector3 place = tilemap.CellToWorld(localPlace);
                     if (tilemap.HasTile(localPlace))
                     {
-                        int randType = Random.Range(0, 5);
-                        //Hide the tile
-                        tilemap.SetTile(localPlace, null);
-                        GameObject tile = Instantiate(TilePrefab, place, Quaternion.identity);
-                        tile.transform.parent = tilemap.transform;
-                        tile.GetComponent<Tile>().floorIndex = floorIndex;
-                        tile.GetComponent<SpriteRenderer>().sortingOrder = floorIndex;
-                        SpriteRenderer shadow = tile.transform.GetChild(0).GetComponent<SpriteRenderer>();
-                        shadow.sortingOrder = floorIndex + 2;
-                        tile.GetComponent<Tile>().icons = Resources.Load<Sprite>("Sprites/Fruit/" + randType);
-                        tile.GetComponent<Tile>().tileType = (TileType)randType;
+                        if (tilemap.GetTile(localPlace).name.Contains("tile"))
+                        {
+                            Debug.Log(tilemap.GetTile(localPlace).name);
+                            int randType = Random.Range(0, 3);
+                            //Hide the tile
+                            tilemap.SetTile(localPlace, null);
+                            GameObject tile = Instantiate(TilePrefab, place, Quaternion.identity);
+                            tile.transform.parent = tilemap.transform;
+                            tile.GetComponent<Tile>().floorIndex = floorIndex;
+                            tile.GetComponent<SpriteRenderer>().sortingOrder = floorIndex;
+                            SpriteRenderer shadow = tile.transform.GetChild(0).GetComponent<SpriteRenderer>();
+                            shadow.sortingOrder = floorIndex + 2;
+                            tile.GetComponent<Tile>().icons = Resources.Load<Sprite>("Sprites/Fruit/" + randType);
+                            tile.GetComponent<Tile>().tileType = (TileType)randType;
+                            //Set tile position
+                            tile.GetComponent<Tile>().posX = x;
+                            tile.GetComponent<Tile>().posY = y;
+                            tiles.Add(tile.GetComponent<Tile>());
+                        }
+
+                        if (tilemap != null && tilemap.GetTile(localPlace) != null && tilemap.GetTile(localPlace).name.Contains("SpecialFrog"))
+                        {
+                            Debug.Log(tilemap.GetTile(localPlace).name);
+                            //Hide the tile
+                            tilemap.SetTile(localPlace, null);
+                            GameObject tile = Instantiate(specialTile[0], place, Quaternion.identity);
+                            tile.transform.parent = tilemap.transform;
+                            tile.GetComponent<Tile>().floorIndex = floorIndex;
+                            tile.GetComponent<SpriteRenderer>().sortingOrder = floorIndex;
+                            SpriteRenderer shadow = tile.transform.GetChild(0).GetComponent<SpriteRenderer>();
+                            shadow.sortingOrder = floorIndex + 2;
+                            tile.GetComponent<Tile>().icons = Resources.Load<Sprite>("Sprites/Items/1");
+                            tile.GetComponent<Tile>().tileType = TileType.Special_1;
+                            //Set tile position
+                            tile.GetComponent<Tile>().posX = x;
+                            tile.GetComponent<Tile>().posY = y;
+                            tiles.Add(tile.GetComponent<Tile>());
+                        }
                     }
+
+                    //if tilemap has special tile
+                    
                 }
             }
             floorIndex++;
             floorIndex += 2;
-        }       
+        }  
+          
     }
+
+
     public async void CheckItemsContainer()
     {
         try
