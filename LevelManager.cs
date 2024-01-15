@@ -121,6 +121,27 @@ public class LevelManager : MonoBehaviour
                             tile.GetComponent<Tile>().posY = y;
                             tiles.Add(tile.GetComponent<Tile>());
                         }
+                        //if tilemap has special tile chain
+                        if (tilemap != null && tilemap.GetTile(localPlace) != null && tilemap.GetTile(localPlace).name.Contains("ChainTile"))
+                        {
+                            Debug.Log(tilemap.GetTile(localPlace).name);
+                            //Hide the tile
+                            int randType = Random.Range(0, 5);
+                            tilemap.SetTile(localPlace, null);
+                            GameObject tile = Instantiate(specialTile[2], place, Quaternion.identity);
+                            tile.transform.parent = tilemap.transform;
+                            tile.GetComponent<Tile>().floorIndex = floorIndex;
+                            tile.GetComponent<SpriteRenderer>().sortingOrder = floorIndex;
+                            SpriteRenderer shadow = tile.transform.GetChild(0).GetComponent<SpriteRenderer>();
+                            shadow.sortingOrder = floorIndex + 2;
+                            tile.GetComponent<Tile>().icons = Resources.Load<Sprite>("Sprites/Fruit/" + randType);
+                            tile.GetComponent<Tile>().tileType = (TileType)randType;
+                            //Set tile position
+                            tile.GetComponent<Tile>().isItem = true;
+                            tile.GetComponent<Tile>().posX = x;
+                            tile.GetComponent<Tile>().posY = y;
+                            tiles.Add(tile.GetComponent<Tile>());
+                        }
                     }
 
                     //if tilemap has special tile
