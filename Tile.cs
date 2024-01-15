@@ -26,7 +26,8 @@ public class Tile : MonoBehaviour
 
     public Sprite icons;
     public int floorIndex;
-    bool isAvailable = true;
+    //Hide in inspector
+    [HideInInspector] public bool isAvailable = true;
 
     
     public int posX;
@@ -35,7 +36,7 @@ public class Tile : MonoBehaviour
     public GameObject shadow;
 
     public TileType tileType;
-    bool isItem = false;
+    public bool isItem = false;
     public bool picked = false;
     public List<GameObject> collideWith = new List<GameObject>();
 
