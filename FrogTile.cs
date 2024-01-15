@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Tilemaps;
 
 public class FrogTile : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class FrogTile : MonoBehaviour
     {
         levelManager = LevelManager.instance;
         isBorder = CheckEdge();
-        CheckBelow();
         levelManager.OnTileClicked.AddListener(CheckBelow);
     }
 
@@ -49,6 +49,14 @@ public class FrogTile : MonoBehaviour
 
         tilesBelow = levelManager.tiles.Where(tile => tile.posX == posX && tile.posY == posY - 1 && tile.floorIndex == floorIndex).ToList();
 
+        //if tiles below is empty
+        if (tilesBelow.Count <= 0)
+        {
+            Tilemap tilemap = gameObject.GetComponentInParent<Tilemap>();
+            levelManager.SpawnTile(posX, posY - 1, floorIndex, tilemap);
+            Debug.Log("Spawned");
+        }
+        
         
     }
 }

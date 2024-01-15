@@ -139,16 +139,16 @@ public class LevelManager : MonoBehaviour
                 
             }
     
-            foreach (Tile tile in itemContainer)
+            var itemContainerCopy = new List<Tile>(itemContainer);
+
+            foreach (Tile tile in itemContainerCopy)
             {
                 tile.transform.SetSiblingIndex(itemContainer.IndexOf(tile));
             }
-           
-    
-            await Task.Delay(100);
-    
+
+
             //Check if item has 3 same type
-            foreach (Tile tile in itemContainer)
+            foreach (Tile tile in itemContainerCopy)
             {
                 //Get the same type
                 List<Tile> sameType = itemContainer.Where(item => item.tileType == tile.tileType).ToList();
@@ -172,5 +172,26 @@ public class LevelManager : MonoBehaviour
 
     }
 
+
+    public void SpawnTile(int posX, int posY, int floorIndex, Tilemap tilemap)
+    {
+        var place = tilemap.CellToWorld(new Vector3Int(posX, posY, (int)tilemap.transform.position.y));
+        //Spawn new tile
+        int randType = Random.Range(0, 3);
+        //Hide the tile
+        GameObject tile = Instantiate(TilePrefab, place, Quaternion.identity);
+        tile.transform.parent = tilemap.transform;
+        tile.GetComponent<Tile>().floorIndex = floorIndex;
+        tile.GetComponent<SpriteRenderer>().sortingOrder = floorIndex;
+        SpriteRenderer shadow = tile.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        shadow.sortingOrder = floorIndex + 2;
+        tile.GetComponent<Tile>().icons = Resources.Load<Sprite>("Sprites/Fruit/" + randType);
+        tile.GetComponent<Tile>().tileType = (TileType)randType;
+        //Set tile position
+        tile.GetComponent<Tile>().posX = posX;
+        tile.GetComponent<Tile>().posY = posY;
+        tiles.Add(tile.GetComponent<Tile>());
+    
+    }
 
 }

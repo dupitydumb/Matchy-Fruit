@@ -134,12 +134,19 @@ public class Tile : MonoBehaviour
 
     public void CheckCollide()
     {
+        List<GameObject> tilesToRemove = new List<GameObject>();
+
         foreach (GameObject tile in collideWith)
         {
             if (tile == null || tile.GetComponent<Tile>().picked == true)
             {
-                collideWith.Remove(tile);
+                tilesToRemove.Add(tile);
             }
+        }
+
+        foreach (GameObject tileToRemove in tilesToRemove)
+        {
+            collideWith.Remove(tileToRemove);
         }
     }
 
