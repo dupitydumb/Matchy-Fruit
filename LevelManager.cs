@@ -16,6 +16,8 @@ public class LevelManager : MonoBehaviour
 
     public UnityEvent OnTileClicked;
     public GameObject container;
+
+    public int maxItemsInContainer = 6;
     public List<Tile> itemContainer = new List<Tile>();
 
     public List<Tile> tiles = new List<Tile>();
@@ -62,7 +64,7 @@ public class LevelManager : MonoBehaviour
                         if (tilemap.GetTile(localPlace).name.Contains("tile"))
                         {
                             Debug.Log(tilemap.GetTile(localPlace).name);
-                            int randType = Random.Range(0, 3);
+                            int randType = Random.Range(0, 5);
                             //Hide the tile
                             tilemap.SetTile(localPlace, null);
                             GameObject tile = Instantiate(TilePrefab, place, Quaternion.identity);
@@ -110,7 +112,7 @@ public class LevelManager : MonoBehaviour
     }
 
 
-    public async void CheckItemsContainer()
+    public void CheckItemsContainer()
     {
         try
         {
@@ -173,12 +175,14 @@ public class LevelManager : MonoBehaviour
     }
 
 
-    public void SpawnTile(int posX, int posY, int floorIndex, Tilemap tilemap)
+    public async void SpawnTile(int posX, int posY, int floorIndex, Tilemap tilemap)
     {
         var place = tilemap.CellToWorld(new Vector3Int(posX, posY, (int)tilemap.transform.position.y));
         //Spawn new tile
         int randType = Random.Range(0, 3);
         //Hide the tile
+
+        await Task.Delay(1000);
         GameObject tile = Instantiate(TilePrefab, place, Quaternion.identity);
         tile.transform.parent = tilemap.transform;
         tile.GetComponent<Tile>().floorIndex = floorIndex;

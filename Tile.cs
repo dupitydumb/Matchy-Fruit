@@ -11,6 +11,8 @@ public enum TileType
     Normal_2,
     Normal_3,
     Normal_4,
+    Normal_5,
+    Normal_6,
     
     Special_1,
     Special_2,
@@ -90,7 +92,7 @@ public class Tile : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (isAvailable && !picked && !isItem)
+            if (isAvailable && !picked && !isItem && LevelManager.instance.itemContainer.Count < LevelManager.instance.maxItemsInContainer)
             {
                 Debug.Log("Clicked");
                 levelManager.itemContainer.Add(this);
@@ -104,6 +106,10 @@ public class Tile : MonoBehaviour
                 {
                     Debug.Log(e);
                 }
+            }
+            else
+            {
+                Debug.Log("Not Available");
             }
         }
 
