@@ -27,7 +27,7 @@ public class Tile : MonoBehaviour
     public Sprite icons;
     public int floorIndex;
     //Hide in inspector
-    [HideInInspector] public bool isAvailable = true;
+    public bool isAvailable = true;
 
     
     public int posX;
@@ -48,8 +48,7 @@ public class Tile : MonoBehaviour
         levelManager = LevelManager.instance;
         Debug.Log(isAvailable);
         transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = icons;
-        transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = floorIndex + 1;
-
+        
         if (tileType == TileType.Special_1)
         {
             isItem = true;
@@ -57,13 +56,31 @@ public class Tile : MonoBehaviour
     }
 
 
-    //check if the tile is on edge
+    void SetShadowFloor()
+    {
+        
+        transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = floorIndex + 1;
+        SpriteRenderer shadow = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        shadow.sortingOrder = floorIndex + 2;
+    }
+    
+    void SetLayerSorting()
+    {
+        // Set the sorting layer to the parent's sorting layer
+        SpriteRenderer spriteRenderer = transform.GetComponent<SpriteRenderer>();
+        spriteRenderer.sortingOrder = floorIndex;
+    }
     
 
     // Update is called once per frame
     void Update()
     {
-        
+        SetShadowFloor();
+        SetLayerSorting();
+        if (collideWith.Count <= 0)
+        {
+            isAvailable = true;
+        }
         if (!isAvailable)
         {
             shadow.SetActive(true);
@@ -73,17 +90,11 @@ public class Tile : MonoBehaviour
             shadow.SetActive(false);
         }
 
-        if (collideWith.Count <= 0)
-        {
-            isAvailable = true;
-        }
+        
 
         CheckCollide();
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            CheckBelow();
-        }
+        
     }
 
     /// <summary>
@@ -118,22 +129,24 @@ public class Tile : MonoBehaviour
     }
 
   
-
+    public void ClearCollide()
+    {
+        collideWith.Clear();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         
-        if (collision.gameObject.tag == "Tile")
+        //If Collide with tile and tile floor index is lower than this tile
+        if (collision.gameObject.tag == "Tile" && collision.gameObject.GetComponent<Tile>().floorIndex > floorIndex)
         {
-            
-            //if this floor index is lower than the other floor index
-            if (floorIndex < collision.gameObject.GetComponent<Tile>().floorIndex)
+            //if collide have not been added to the list
+            if (!collideWith.Contains(collision.gameObject))
             {
-                isAvailable = false;
+                //Add to the list
                 collideWith.Add(collision.gameObject);
+                isAvailable = false;
             }
-            Debug.Log("Collision");
-
         }
         
     }
