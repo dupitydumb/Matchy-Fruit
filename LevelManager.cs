@@ -287,7 +287,7 @@ public class LevelManager : MonoBehaviour
           
     }
 
-
+    
     public void CheckItemsContainer()
     {
         try
@@ -333,12 +333,16 @@ public class LevelManager : MonoBehaviour
                 //If same type more than 3
                 if (sameType.Count >= 3)
                 {
+                    AudioManager.instance.PlayMatch();
                     //Remove all same type
                     foreach (Tile item in sameType)
                     {
                         itemContainer.Remove(item);
+                        tiles.Remove(item);
                         Destroy(item.gameObject);
                     }
+
+                    
                 }
             }
         }

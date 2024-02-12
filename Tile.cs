@@ -94,7 +94,6 @@ public class Tile : MonoBehaviour
 
         CheckCollide();
 
-        
     }
 
     /// <summary>
@@ -106,6 +105,7 @@ public class Tile : MonoBehaviour
         {
             if (isAvailable && !picked && !isItem && LevelManager.instance.itemContainer.Count < LevelManager.instance.maxItemsInContainer)
             {
+                AudioManager.instance.PlayClick();
                 Debug.Log("Clicked");
                 levelManager.itemContainer.Add(this);
                 floorIndex = 0;
@@ -121,11 +121,37 @@ public class Tile : MonoBehaviour
             }
             else
             {
-                Debug.Log("Not Available");
+                Debug.Log("Not Available :" + isAvailable);
+                
             }
+        }
+        if (!isAvailable)
+        {
+            Debug.Log("Disable Collider");
+            GetComponent<BoxCollider2D>().enabled = false;
         }
 
         
+    }
+
+    private void OnMouseExit()
+    {
+        Debug.Log("Mouse Exit");
+        EnableCollider();
+    }
+
+    
+
+    //Enable Box Collider in 2 seconds
+    public void EnableCollider()
+    {
+        StartCoroutine(EnableColliderAfterSeconds(0.3f));
+    }
+
+    IEnumerator EnableColliderAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        GetComponent<BoxCollider2D>().enabled = true;
     }
 
   
