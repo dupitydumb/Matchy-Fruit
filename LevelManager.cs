@@ -5,10 +5,13 @@ using UnityEngine.Tilemaps;
 using UnityEngine.Events;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
 
+    public GameObject gameOverPanel;
+    public GameObject winPanel;
     public Tilemap[] tilemap;
 
     public GameObject[] specialTile;
@@ -17,7 +20,7 @@ public class LevelManager : MonoBehaviour
     public UnityEvent OnTileClicked;
     public GameObject container;
 
-    public int maxItemsInContainer = 6;
+    public int maxItemsInContainer = 7;
     public List<Tile> itemContainer = new List<Tile>();
 
     public List<Tile> tiles = new List<Tile>();
@@ -49,6 +52,11 @@ public class LevelManager : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             ShuffleTile();
+        }
+
+        if (itemContainer.Count >= maxItemsInContainer)
+        {
+            GameOver();
         }
     }
 
@@ -378,4 +386,19 @@ public class LevelManager : MonoBehaviour
     
     }
 
+    public void GameOver()
+    {
+        gameOverPanel.SetActive(true);
+        
+    }
+
+    public void Win()
+    {
+        winPanel.SetActive(true);
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
