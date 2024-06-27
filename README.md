@@ -1,6 +1,7 @@
 <h1>Matchy Fruit</h1>
 
 Download [Unity Packages](https://ko-fi.com/s/2ea0833d3f)
+Play The Game [Itch.io](https://avkov.itch.io/matchy-fruit)
 
 <a href="https://wakatime.com/badge/github/dupitydumb/Cocoki"><img src="https://wakatime.com/badge/github/dupitydumb/Cocoki.svg" alt="wakatime"></a>
 
